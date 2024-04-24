@@ -10,7 +10,7 @@ app.listen(port, () => {
 
 //Post Request
 app.get('/',(req,res) => {
-    res.send('Hello World')
+    res.send('Eddie Lao')
 })
 
 
