@@ -8,6 +8,21 @@
   </head>
   <body>
     <h1>Books API</h1>
+    <form id="book-form" action="/books">
+      <input type="hidden" id="bookId" name="id" value="" />
+
+      <label for="title">Enter Book ID:</label><br />
+      <input type="text" id="inputid" name="id" /><br />
+      <label for="title">Enter Book Title:</label><br />
+      <input type="text" id="title" name="title" required /><br />
+      <label for="author">Enter Book Author:</label><br />
+      <input type="text" id="author" name="author" required /><br /><br />
+
+      <button type="submit" id="submit-btn">Submit</button>
+      <button type="button" id="update-btn">Update</button>
+      <button type="button" id="delete-btn">Delete</button>
+    </form>
+
     <section id="book-list"></section>
     <script src="scripts/script.js"></script>
   </body>
