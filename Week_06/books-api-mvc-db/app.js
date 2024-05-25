@@ -27,11 +27,13 @@ app.delete("/books/:id", booksController.deleteBook); // DELETE for deleting boo
 
 
 // Routes for users
-app.get("/users", usersController.getAllUsers);
-app.get("/users/:id", usersController.getUserById);
-app.post("/users", usersController.createUser);
-app.put("/users/:id", usersController.updateUser);
-app.delete("/users/:id", usersController.deleteUser);
+app.get("/users", usersController.getAllUsers); // works
+app.get("/users/:id", usersController.getUserById); // works
+app.post("/users", usersController.createUser); // works
+app.put("/users/:id", usersController.updateUserById); // works
+app.delete("/users/:id", usersController.deleteUserById); // works
+
+
 app.get("/users/search", usersController.searchUsers);
 app.get("/users/with-books", usersController.getUsersWithBooks);
 

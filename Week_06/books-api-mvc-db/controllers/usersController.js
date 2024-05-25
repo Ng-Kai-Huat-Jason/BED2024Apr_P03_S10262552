@@ -1,4 +1,5 @@
 const User = require("../models/user");
+//////////////////////////////////////////////////////////////////////
 
 const getAllUsers = async (req, res) => {
   try {
@@ -9,6 +10,7 @@ const getAllUsers = async (req, res) => {
     res.status(500).send("Error retrieving users");
   }
 };
+//////////////////////////////////////////////////////////////////////
 
 const getUserById = async (req, res) => {
   const userId = parseInt(req.params.id);
@@ -23,6 +25,7 @@ const getUserById = async (req, res) => {
     res.status(500).send("Error retrieving user");
   }
 };
+//////////////////////////////////////////////////////////////////////
 
 const createUser = async (req, res) => {
   const newUser = req.body;
@@ -34,13 +37,13 @@ const createUser = async (req, res) => {
     res.status(500).send("Error creating user");
   }
 };
-
-const updateUser = async (req, res) => {
+//////////////////////////////////////////////////////////////////////
+const updateUserById = async (req, res) => {
   const userId = parseInt(req.params.id);
   const newUserData = req.body;
 
   try {
-    const updatedUser = await User.updateUser(userId, newUserData);
+    const updatedUser = await User.updateUserById(userId, newUserData);
     if (!updatedUser) {
       return res.status(404).send("User not found");
     }
@@ -50,12 +53,13 @@ const updateUser = async (req, res) => {
     res.status(500).send("Error updating user");
   }
 };
+//////////////////////////////////////////////////////////////////////
 
-const deleteUser = async (req, res) => {
+const deleteUserById = async (req, res) => {
   const userId = parseInt(req.params.id);
 
   try {
-    const success = await User.deleteUser(userId);
+    const success = await User.deleteUserById(userId);
     if (!success) {
       return res.status(404).send("User not found");
     }
@@ -65,18 +69,20 @@ const deleteUser = async (req, res) => {
     res.status(500).send("Error deleting user");
   }
 };
+//////////////////////////////////////////////////////////////////////
 
-const searchUsers = async (req, res) => {
+async function searchUsers(req, res) {
   const searchTerm = req.query.searchTerm; // Extract search term from query params
 
-  try {
+  try {    
     const users = await User.searchUsers(searchTerm);
     res.json(users);
   } catch (error) {
     console.error(error);
-    res.status(500).send("Error searching users");
+    res.status(500).json({ message: "Error searching users" });
   }
-};
+}
+//////////////////////////////////////////////////////////////////////
 
 async function getUsersWithBooks(req, res) {
   try {
@@ -88,12 +94,14 @@ async function getUsersWithBooks(req, res) {
   }
 }
 
+//////////////////////////////////////////////////////////////////////
+
 module.exports = {
   getAllUsers,
   createUser,
   getUserById,
-  updateUser,
-  deleteUser,
+  updateUserById,
+  deleteUserById,
   searchUsers,
   getUsersWithBooks,
 };

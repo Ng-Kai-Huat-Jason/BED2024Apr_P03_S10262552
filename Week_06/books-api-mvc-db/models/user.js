@@ -2,7 +2,6 @@ const sql = require("mssql");
 const dbConfig = require("../dbConfig");
 
 class User {
-  
   constructor(id, username, email) {
     this.id = id;
     this.username = username;
@@ -13,11 +12,9 @@ class User {
   static async createUser(newUserData) {
     const connection = await sql.connect(dbConfig);
 
-    const sqlQuery = `INSERT INTO Users (id, username, email) VALUES (@id, @username, @email);
-                      SELECT SCOPE_IDENTITY() AS id;`; // Retrieve ID of inserted record
+    const sqlQuery = `INSERT INTO Users (username, email) VALUES (@username, @email); SELECT SCOPE_IDENTITY() AS id;`; // Retrieve ID of inserted record
 
     const request = connection.request();
-    request.input("id", newUserData.id);
     request.input("username", newUserData.username);
     request.input("email", newUserData.email);
 
@@ -25,7 +22,7 @@ class User {
 
     connection.close();
 
-    // Retrieve the newly created user using its ID
+    // Retrieve the newly created book using its ID
     return this.getUserById(result.recordset[0].id);
   }
 
@@ -101,36 +98,34 @@ class User {
   // Search Users
   static async searchUsers(searchTerm) {
     const connection = await sql.connect(dbConfig);
+    const query = `SELECT *
+                   FROM Users
+                   WHERE username LIKE '%${searchTerm}%'
+                      OR email LIKE '%${searchTerm}%'`;
 
     try {
-      const query = `
-          SELECT *
-          FROM Users
-          WHERE username LIKE '%${searchTerm}%'
-          OR email LIKE '%${searchTerm}%'
-        `;
-
-      const result = await connection.request().query(query);
+      const request = connection.request(); // Optional for prepared statements
+      const result = await request.query(query); // Use request.query with prepared statements
       return result.recordset;
     } catch (error) {
-      throw new Error("Error searching users"); // Or handle error differently
+      throw new Error("Error searching users");
     } finally {
-      await connection.close(); // Close connection even on errors
+      await connection.close();
     }
   }
-
+  
   // Get Users with Books
   static async getUsersWithBooks() {
     const connection = await sql.connect(dbConfig);
 
     try {
       const query = `
-          SELECT u.id AS user_id, u.username, u.email, b.id AS book_id, b.title, b.author
-          FROM Users u
-          LEFT JOIN UserBooks ub ON ub.user_id = u.id
-          LEFT JOIN Books b ON ub.book_id = b.id
-          ORDER BY u.username;
-        `;
+        SELECT u.id AS user_id, u.username, u.email, b.id AS book_id, b.title, b.author
+        FROM Users u
+        LEFT JOIN UserBooks ub ON ub.user_id = u.id
+        LEFT JOIN Books b ON ub.book_id = b.id
+        ORDER BY u.username;
+      `;
 
       const result = await connection.request().query(query);
 
@@ -160,6 +155,7 @@ class User {
       await connection.close();
     }
   }
+
 }
 
 module.exports = User;
